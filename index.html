@@ -182,6 +182,7 @@
     <h1 class="title">Новая запись</h1>
     <p class="subtitle">
       Заполни форму. Черновик сохраняется автоматически, поэтому можно закрыть окно и вернуться позже.
+      Если бот распознал часть данных из текста, они уже будут подставлены.
     </p>
 
     <div class="row">
@@ -305,11 +306,15 @@
     }
 
     function setFormData(data) {
-      fields.forEach((field) => {
-        if (data[field] !== undefined && el(field)) {
-          el(field).value = data[field];
-        }
-      });
+      if (!data) return;
+
+      if (data.credit_manager !== undefined) el("credit_manager").value = data.credit_manager;
+      if (data.income !== undefined) el("income").value = data.income;
+      if (data.inn !== undefined) el("inn").value = data.inn;
+      if (data.product !== undefined) el("product").value = data.product;
+      if (data.addressing !== undefined) el("addressing").value = data.addressing;
+      if (data.phone !== undefined) el("phone").value = data.phone;
+      if (data.comment !== undefined) el("comment").value = data.comment;
     }
 
     function saveDraft() {
@@ -326,6 +331,18 @@
         setFormData(data);
       } catch (e) {
         console.error("Ошибка загрузки черновика", e);
+      }
+    }
+
+    function getDraftFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const raw = params.get("draft");
+        if (!raw) return null;
+        return JSON.parse(decodeURIComponent(raw));
+      } catch (e) {
+        console.error("Не удалось прочитать draft из URL", e);
+        return null;
       }
     }
 
@@ -364,16 +381,21 @@
 
       showError("");
 
-      // очищаем черновик только после успешной отправки
       localStorage.removeItem(STORAGE_KEY);
 
       tg.sendData(JSON.stringify(data));
       tg.close();
     }
 
-    // автосохранение при каждом изменении
     window.addEventListener("DOMContentLoaded", () => {
-      loadDraft();
+      const draftFromUrl = getDraftFromUrl();
+
+      if (draftFromUrl) {
+        setFormData(draftFromUrl);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(draftFromUrl));
+      } else {
+        loadDraft();
+      }
 
       fields.forEach((field) => {
         const node = el(field);
