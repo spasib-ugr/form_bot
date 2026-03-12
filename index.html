@@ -293,6 +293,16 @@
       return (s || "").replace(/\D/g, "");
     }
 
+    function getDraftTokenFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("draft_token") || "";
+      } catch (e) {
+        console.error("Не удалось прочитать draft_token из URL", e);
+        return "";
+      }
+    }
+
     function getFormData() {
       return {
         credit_manager: el("credit_manager").value,
@@ -301,7 +311,8 @@
         product: el("product").value,
         addressing: el("addressing").value.trim(),
         phone: el("phone").value.trim(),
-        comment: el("comment").value.trim()
+        comment: el("comment").value.trim(),
+        draft_token: getDraftTokenFromUrl()
       };
     }
 
@@ -318,7 +329,16 @@
     }
 
     function saveDraft() {
-      const data = getFormData();
+      const data = {
+        credit_manager: el("credit_manager").value,
+        income: el("income").value,
+        inn: el("inn").value.trim(),
+        product: el("product").value,
+        addressing: el("addressing").value.trim(),
+        phone: el("phone").value.trim(),
+        comment: el("comment").value.trim()
+      };
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       showSavedHint();
     }
@@ -380,7 +400,6 @@
       }
 
       showError("");
-
       localStorage.removeItem(STORAGE_KEY);
 
       tg.sendData(JSON.stringify(data));
