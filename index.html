@@ -1,111 +1,388 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Форма клиента</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Форма клиента</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3ee;
+      --primary: #2f80ed;
+      --primary-hover: #256fd0;
+      --danger: #d64545;
+      --success: #1f9d55;
+      --shadow: 0 8px 30px rgba(26, 54, 93, 0.08);
+      --radius: 16px;
+    }
 
-<style>
-body{
-font-family:Arial;
-padding:20px;
-background:#f4f4f4;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.container{
-background:white;
-padding:20px;
-border-radius:10px;
-max-width:500px;
-margin:auto;
-}
+    body {
+      margin: 0;
+      padding: 18px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, #f7f9fc 100%);
+      color: var(--text);
+    }
 
-input,select,textarea,button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:6px;
-border:1px solid #ccc;
-}
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 18px 18px;
+      border: 1px solid #eef2f7;
+    }
 
-button{
-background:#2f80ed;
-color:white;
-border:none;
-cursor:pointer;
-}
-</style>
+    .title {
+      margin: 0 0 6px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(47, 128, 237, 0.12);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.05s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #e5ebf3;
+    }
+
+    .error {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff1f1;
+      color: var(--danger);
+      font-size: 14px;
+      display: none;
+    }
+
+    .success-hint {
+      margin-top: 10px;
+      color: var(--success);
+      font-size: 13px;
+      display: none;
+    }
+
+    @media (max-width: 520px) {
+      .row,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 18px 14px 16px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1 class="title">Новая запись</h1>
+    <p class="subtitle">
+      Заполни форму. Черновик сохраняется автоматически, поэтому можно закрыть окно и вернуться позже.
+    </p>
 
-<div class="container">
+    <div class="row">
+      <div class="field">
+        <label for="credit_manager">Клиентский менеджер</label>
+        <select id="credit_manager">
+          <option value="">Выберите менеджера</option>
+          <option value="Иван Иванов">Иван Иванов</option>
+          <option value="Петр Петров">Петр Петров</option>
+          <option value="Алексей Сидоров">Алексей Сидоров</option>
+        </select>
+      </div>
 
-<h2>Новая запись</h2>
+      <div class="field">
+        <label for="income">800+/800-</label>
+        <select id="income">
+          <option value="">Выберите значение</option>
+          <option value="800+">800+</option>
+          <option value="800-">800-</option>
+        </select>
+      </div>
+    </div>
 
-<label>Клиентский менеджер</label>
-<select id="manager">
-<option value="Иван Иванов">Иван Иванов</option>
-<option value="Петр Петров">Петр Петров</option>
-<option value="Алексей Сидоров">Алексей Сидоров</option>
-</select>
+    <div class="row">
+      <div class="field">
+        <label for="inn">ИНН</label>
+        <input id="inn" type="text" maxlength="10" placeholder="10 цифр" />
+        <small>Только 10 цифр</small>
+      </div>
 
-<label>800+/800-</label>
-<select id="income">
-<option value="800+">800+</option>
-<option value="800-">800-</option>
-</select>
+      <div class="field">
+        <label for="phone">Телефон</label>
+        <input id="phone" type="text" placeholder="+79001234567" />
+        <small>Можно ввести с +7 или 8</small>
+      </div>
+    </div>
 
-<label>ИНН</label>
-<input id="inn" placeholder="10 цифр">
+    <div class="field">
+      <label for="product">Продукт</label>
+      <select id="product">
+        <option value="">Выберите продукт</option>
+        <option value="РЕПО">РЕПО</option>
+        <option value="Процентное хеджирование">Процентное хеджирование</option>
+        <option value="Валютное хеджирование">Валютное хеджирование</option>
+      </select>
+    </div>
 
-<label>Продукт</label>
-<select id="product">
-<option value="РЕПО">РЕПО</option>
-<option value="Процентное хеджирование">Процентное хеджирование</option>
-<option value="Валютное хеджирование">Валютное хеджирование</option>
-</select>
+    <div class="field">
+      <label for="addressing">ФИО / должность</label>
+      <input id="addressing" type="text" placeholder="Например: Генеральный директор Иван Иванов" />
+    </div>
 
-<label>ФИО / должность</label>
-<input id="addressing">
+    <div class="field">
+      <label for="comment">Комментарий</label>
+      <textarea id="comment" placeholder="Необязательно"></textarea>
+    </div>
 
-<label>Телефон</label>
-<input id="phone">
+    <div class="actions">
+      <button class="btn-secondary" type="button" onclick="clearDraft()">Очистить черновик</button>
+      <button class="btn-primary" type="button" onclick="submitForm()">Отправить</button>
+    </div>
 
-<label>Комментарий</label>
-<textarea id="comment"></textarea>
+    <div id="error" class="error"></div>
+    <div id="savedHint" class="success-hint">Черновик сохранён</div>
+  </div>
 
-<button onclick="sendData()">Отправить</button>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-</div>
+    const STORAGE_KEY = "client_form_draft_v1";
 
-<script>
+    const fields = [
+      "credit_manager",
+      "income",
+      "inn",
+      "product",
+      "addressing",
+      "phone",
+      "comment"
+    ];
 
-const tg = window.Telegram.WebApp
-tg.expand()
+    function el(id) {
+      return document.getElementById(id);
+    }
 
-function sendData(){
+    function showError(text) {
+      const block = el("error");
+      if (!text) {
+        block.style.display = "none";
+        block.textContent = "";
+        return;
+      }
+      block.textContent = text;
+      block.style.display = "block";
+    }
 
-const data = {
+    function showSavedHint() {
+      const hint = el("savedHint");
+      hint.style.display = "block";
+      clearTimeout(window.__savedHintTimer);
+      window.__savedHintTimer = setTimeout(() => {
+        hint.style.display = "none";
+      }, 1000);
+    }
 
-credit_manager: document.getElementById("manager").value,
-income: document.getElementById("income").value,
-inn: document.getElementById("inn").value,
-product: document.getElementById("product").value,
-addressing: document.getElementById("addressing").value,
-phone: document.getElementById("phone").value,
-comment: document.getElementById("comment").value
+    function digitsOnly(s) {
+      return (s || "").replace(/\D/g, "");
+    }
 
-}
+    function getFormData() {
+      return {
+        credit_manager: el("credit_manager").value,
+        income: el("income").value,
+        inn: el("inn").value.trim(),
+        product: el("product").value,
+        addressing: el("addressing").value.trim(),
+        phone: el("phone").value.trim(),
+        comment: el("comment").value.trim()
+      };
+    }
 
-tg.sendData(JSON.stringify(data))
-tg.close()
+    function setFormData(data) {
+      fields.forEach((field) => {
+        if (data[field] !== undefined && el(field)) {
+          el(field).value = data[field];
+        }
+      });
+    }
 
-}
+    function saveDraft() {
+      const data = getFormData();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      showSavedHint();
+    }
 
-</script>
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        setFormData(data);
+      } catch (e) {
+        console.error("Ошибка загрузки черновика", e);
+      }
+    }
 
+    function clearDraft() {
+      localStorage.removeItem(STORAGE_KEY);
+      setFormData({
+        credit_manager: "",
+        income: "",
+        inn: "",
+        product: "",
+        addressing: "",
+        phone: "",
+        comment: ""
+      });
+      showError("");
+    }
+
+    function validateForm(data) {
+      if (!data.credit_manager) return "Выберите менеджера";
+      if (!data.income) return "Выберите 800+/800-";
+      if (digitsOnly(data.inn).length !== 10) return "ИНН должен содержать 10 цифр";
+      if (!data.product) return "Выберите продукт";
+      if (!data.addressing.trim()) return "Укажите ФИО / должность";
+      if (digitsOnly(data.phone).length < 11) return "Телефон заполнен неверно";
+      return "";
+    }
+
+    function submitForm() {
+      const data = getFormData();
+      const error = validateForm(data);
+
+      if (error) {
+        showError(error);
+        return;
+      }
+
+      showError("");
+
+      // очищаем черновик только после успешной отправки
+      localStorage.removeItem(STORAGE_KEY);
+
+      tg.sendData(JSON.stringify(data));
+      tg.close();
+    }
+
+    // автосохранение при каждом изменении
+    window.addEventListener("DOMContentLoaded", () => {
+      loadDraft();
+
+      fields.forEach((field) => {
+        const node = el(field);
+        if (!node) return;
+
+        node.addEventListener("input", saveDraft);
+        node.addEventListener("change", saveDraft);
+      });
+    });
+  </script>
 </body>
 </html>
